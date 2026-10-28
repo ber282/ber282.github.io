@@ -1,0 +1,399 @@
+<!DOCTYPE html>﻿
+<html lang="zh-CN">﻿
+<head>﻿
+<meta charset="UTF-8">﻿
+<meta name="viewport" content="width=device-width, initial-scale=1.0">﻿
+<title>我的网站</title>﻿
+<style>﻿
+  * { box-sizing: border-box; margin: 0; padding: 0; }﻿
+  body { font-family: -apple-system, "Microsoft YaHei", sans-serif; background: #f5f6f8; color: #222; }﻿
+
+  /* 布局：左侧栏 + 右侧内容 */﻿
+  .layout { display: flex; min-height: 100vh; }﻿
+
+  /* 左侧按钮栏 */﻿
+  .sidebar {﻿
+    width: 180px; background: #1f2937; padding: 20px 12px;﻿
+    display: flex; flex-direction: column; gap: 10px; flex-shrink: 0;﻿
+  }﻿
+  .sidebar button {﻿
+    width: 100%; padding: 12px; border: none; border-radius: 8px;﻿
+    background: #374151; color: #fff; font-size: 15px; cursor: pointer;﻿
+    text-align: left; transition: background .2s;﻿
+  }﻿
+  .sidebar button:hover { background: #4b5563; }﻿
+  .sidebar button.active { background: #2563eb; }﻿
+
+  /* 右侧内容区 */﻿
+  .main { flex: 1; padding: 24px; overflow-y: auto; }﻿
+
+  /* 视频区 */﻿
+  .video-area {﻿
+    background: #fff; border-radius: 12px; padding: 16px;﻿
+    min-height: 260px; display: flex; flex-direction: column; gap: 12px;﻿
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);﻿
+  }﻿
+  .video-area h2 { font-size: 18px; }﻿
+  .video-list { display: flex; flex-wrap: wrap; gap: 16px; }﻿
+  .video-item { width: 300px; }﻿
+  .video-item video { width: 100%; border-radius: 8px; background: #000; }﻿
+  .video-item .caption { font-size: 13px; color: #555; margin-top: 6px; word-break: break-all; }﻿
+  .empty-tip { color: #999; font-size: 15px; padding: 40px 0; text-align: center; }﻿
+
+  /* 通用卡片/表单 */﻿
+  .card {﻿
+    background: #fff; border-radius: 12px; padding: 24px;﻿
+    max-width: 520px; box-shadow: 0 1px 4px rgba(0,0,0,.08);﻿
+  }﻿
+  .card h2 { font-size: 20px; margin-bottom: 18px; }﻿
+  .field { margin-bottom: 16px; }﻿
+  .field label { display: block; font-size: 14px; color: #555; margin-bottom: 6px; }﻿
+  .field input, .field textarea {﻿
+    width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px;﻿
+    font-size: 15px; font-family: inherit;﻿
+  }﻿
+  .field textarea { min-height: 80px; resize: vertical; }﻿
+
+  /* 头像框 */﻿
+  .avatar-box {﻿
+    width: 110px; height: 110px; border-radius: 50%; border: 2px dashed #cbd5e1;﻿
+    display: flex; align-items: center; justify-content: center;﻿
+    overflow: hidden; cursor: pointer; background: #f9fafb;﻿
+    color: #94a3b8; font-size: 13px; text-align: center;﻿
+  }﻿
+  .avatar-box img { width: 100%; height: 100%; object-fit: cover; }﻿
+  .avatar-box:hover { border-color: #2563eb; }﻿
+
+  /* 按钮样式 */﻿
+  .btn {﻿
+    padding: 10px 22px; border: none; border-radius: 8px;﻿
+    background: #2563eb; color: #fff; font-size: 15px; cursor: pointer;﻿
+  }﻿
+  .btn:hover { background: #1d4ed8; }﻿
+  .btn.secondary { background: #e5e7eb; color: #333; }﻿
+  .btn.secondary:hover { background: #d1d5db; }﻿
+
+  /* 投稿表单里的文件选择 */﻿
+  .file-row { margin-bottom: 14px; }﻿
+  .file-row input[type="file"] { font-size: 14px; }﻿
+
+  /* 隐藏类 */﻿
+  .hidden { display: none !important; }﻿
+</style>﻿
+</head>﻿
+<body>﻿
+
+<div class="layout">﻿
+
+  <!-- 左侧按钮栏 -->﻿
+  <aside class="sidebar">﻿
+    <button data-page="home" class="active">我的</button>﻿
+    <button data-page="wallet">钱包</button>﻿
+    <button data-page="settings">设置</button>﻿
+    <button data-page="todo">待开发</button>﻿
+    <button data-page="todo">待开发</button>﻿
+  </aside>﻿
+
+  <!-- 右侧内容区 -->﻿
+  <main class="main">﻿
+
+    <!-- 页面1：首页（右侧显示视频） -->﻿
+    <section id="page-home">﻿
+      <div class="video-area">﻿
+        <h2>视频</h2>﻿
+        <div id="videoList" class="video-list"></div>﻿
+        <div id="videoEmpty" class="empty-tip">暂无视频</div>﻿
+      </div>﻿
+    </section>﻿
+
+    <!-- 页面2：我的（头像、名字、年龄、备注、投稿按钮） -->﻿
+    <section id="page-mine" class="hidden">﻿
+      <div class="card">﻿
+        <h2>我的</h2>﻿
+
+        <div class="field">﻿
+          <label>头像</label>﻿
+          <div class="avatar-box" id="avatarBox">﻿
+            <span id="avatarText">点击上传</span>﻿
+          </div>﻿
+          <input type="file" id="avatarInput" accept="image/*" class="hidden">﻿
+        </div>﻿
+
+        <div class="field">﻿
+          <label for="nameInput">名字</label>﻿
+          <input type="text" id="nameInput" placeholder="请输入名字">﻿
+        </div>﻿
+
+        <div class="field">﻿
+          <label for="ageInput">年龄</label>﻿
+          <input type="number" id="ageInput" placeholder="请输入年龄" min="0" max="150">﻿
+        </div>﻿
+
+        <div class="field">﻿
+          <label for="noteInput">备注</label>﻿
+          <textarea id="noteInput" placeholder="写点什么..."></textarea>﻿
+        </div>﻿
+
+        <button class="btn" id="saveProfileBtn">保存资料</button>﻿
+        <button class="btn" id="openSubmitBtn" style="margin-left:8px;">投稿</button>﻿
+      </div>﻿
+
+      <!-- 投稿表单 -->﻿
+      <div class="card hidden" id="submitCard" style="margin-top:20px;">﻿
+        <h2>投稿视频</h2>﻿
+
+        <div class="file-row">﻿
+          <label>选择视频文件（建议 100MB 以内）</label><br>﻿
+          <input type="file" id="videoFileInput" accept="video/*">﻿
+        </div>﻿
+
+        <div class="file-row">﻿
+          <label>视频说明（可选）</label><br>﻿
+          <input type="text" id="videoCaptionInput" placeholder="给视频起个名字" style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:8px;">﻿
+        </div>﻿
+
+        <button class="btn" id="uploadVideoBtn">上传并发布</button>﻿
+        <button class="btn secondary" id="cancelSubmitBtn">取消</button>﻿
+        <p id="uploadStatus" style="margin-top:12px;font-size:14px;color:#2563eb;"></p>﻿
+      </div>﻿
+    </section>﻿
+
+    <!-- 页面3：待开发 -->﻿
+    <section id="page-todo" class="hidden">﻿
+      <div class="card">﻿
+        <h2>未开发</h2>﻿
+        <p style="color:#666;line-height:1.8;">这个功能还在开发中，敬请期待。</p>﻿
+      </div>﻿
+    </section>﻿
+
+  </main>﻿
+</div>﻿
+
+<script>﻿
+/* ============================================================﻿
+   一、工具函数﻿
+   ============================================================ */﻿
+
+// 显示指定页面，隐藏其他页面﻿
+function showPage(pageId) {﻿
+  document.querySelectorAll('main > section').forEach(sec => {﻿
+    sec.classList.add('hidden');﻿
+  });﻿
+  const target = document.getElementById('page-' + pageId);﻿
+  if (target) target.classList.remove('hidden');﻿
+
+  // 左侧按钮高亮﻿
+  document.querySelectorAll('.sidebar button').forEach(btn => {﻿
+    btn.classList.toggle('active', btn.dataset.page === pageId);﻿
+  });﻿
+}﻿
+
+// 左侧按钮点击事件﻿
+document.querySelectorAll('.sidebar button').forEach(btn => {﻿
+  btn.addEventListener('click', () => {﻿
+    const page = btn.dataset.page;﻿
+    if (page === 'home') showPage('home');﻿
+    else if (page === 'wallet' || page === 'settings' || page === 'todo') showPage('todo');﻿
+  });﻿
+});﻿
+
+/* ============================================================﻿
+   二、“我的”页面：头像 + 名字 + 年龄 + 备注（存 localStorage）﻿
+   ============================================================ */﻿
+
+const avatarBox   = document.getElementById('avatarBox');﻿
+const avatarText  = document.getElementById('avatarText');﻿
+const avatarInput = document.getElementById('avatarInput');﻿
+const nameInput   = document.getElementById('nameInput');﻿
+const ageInput    = document.getElementById('ageInput');﻿
+const noteInput   = document.getElementById('noteInput');﻿
+
+// 读取已保存的资料﻿
+function loadProfile(){
+  const data = JSON.parse(localStorage.getItem('profile') || '{}');
+  if (data.avatar) {
+    avatarBox.innerHTML = '<img src="' + data.avatar + '" alt="头像">';
+  }
+  if (data.name) nameInput.value = data.name;
+  if (data.age)  ageInput.value  = data.age;
+  if (data.note) noteInput.value = data.note;
+}
+
+// 点击头像框 -> 触发文件选择
+avatarBox.addEventListener('click', () => avatarInput.click());
+
+// 选好头像图片后：压缩成小图再存 localStorage（避免超限）
+avatarInput.addEventListener('change', () => {
+  const file = avatarInput.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      // 把头像缩到 200x200 以内，再转成 dataURL
+      const canvas = document.createElement('canvas');
+      const size = 200;
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      // 居中裁剪成正方形
+      const minSide = Math.min(img.width, img.height);
+      const sx = (img.width - minSide) / 2;
+      const sy = (img.height - minSide) / 2;
+      ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+
+      avatarBox.innerHTML = '<img src="' + dataUrl + '" alt="头像">';
+      const profile = JSON.parse(localStorage.getItem('profile') || '{}');
+      profile.avatar = dataUrl;
+      localStorage.setItem('profile', JSON.stringify(profile));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+// 保存名字/年龄/备注
+document.getElementById('saveProfileBtn').addEventListener('click', () => {
+  const profile = JSON.parse(localStorage.getItem('profile') || '{}');
+  profile.name = nameInput.value.trim();
+  profile.age  = ageInput.value.trim();
+  profile.note = noteInput.value.trim();
+  localStorage.setItem('profile', JSON.stringify(profile));
+  alert('资料已保存');
+});
+
+// 页面加载时读取资料
+loadProfile();
+
+/* ============================================================
+   三、投稿：把视频存进 IndexedDB，然后显示在首页右侧
+   ============================================================ */
+
+const DB_NAME = 'MySiteDB';
+const DB_VERSION = 1;
+const STORE_NAME = 'videos';
+let db = null;
+
+// 打开/创建数据库
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = e => {
+      const database = e.target.result;
+      if (!database.objectStoreNames.contains(STORE_NAME)) {
+        database.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+      }
+    };
+    req.onsuccess = e => { db = e.target.result; resolve(db); };
+    req.onerror = e => reject(e.target.error);
+  });
+}
+
+// 新增一个视频记录
+function addVideo(record) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    const req = store.add(record);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = e => reject(e.target.error);
+  });
+}
+
+// 读取所有视频
+function getAllVideos() {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const store = tx.objectStore(STORE_NAME);
+    const req = store.getAll();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = e => reject(e.target.error);
+  });
+}
+
+// 把视频列表渲染到首页右侧
+async function renderVideos() {
+  const listEl  = document.getElementById('videoList');
+  const emptyEl = document.getElementById('videoEmpty');
+  listEl.innerHTML = '';
+
+  const videos = await getAllVideos();
+
+  if (!videos.length) {
+    emptyEl.classList.remove('hidden');
+    return;
+  }
+  emptyEl.classList.add('hidden');
+
+  videos.forEach(v => {
+    const url = URL.createObjectURL(v.blob); // 把存的文件变成可播放地址
+    const item = document.createElement('div');
+    item.className = 'video-item';
+
+    const video = document.createElement('video');
+    video.src = url;
+    video.controls = true;
+    video.preload = 'metadata';
+
+    const cap = document.createElement('div');
+    cap.className = 'caption';
+    cap.textContent = v.caption || '未命名视频';
+
+    item.appendChild(video);
+    item.appendChild(cap);
+    listEl.appendChild(item);
+  });
+}
+
+// 投稿表单的显示/隐藏
+const submitCard = document.getElementById('submitCard');
+document.getElementById('openSubmitBtn').addEventListener('click', () => {
+  submitCard.classList.remove('hidden');
+});
+document.getElementById('cancelSubmitBtn').addEventListener('click', () => {
+  submitCard.classList.add('hidden');
+  document.getElementById('uploadStatus').textContent = '';
+});
+
+// 上传视频
+document.getElementById('uploadVideoBtn').addEventListener('click', async () => {
+  const fileInput   = document.getElementById('videoFileInput');
+  const captionInput = document.getElementById('videoCaptionInput');
+  const statusEl    = document.getElementById('uploadStatus');
+  const file = fileInput.files[0];
+
+  if (!file) {
+    alert('请先选择一个视频文件');
+    return;
+  }
+
+  statusEl.textContent = '正在保存，请稍候...';
+
+  try {
+    await addVideo({
+      blob: file,
+      caption: captionInput.value.trim(),
+      createdAt: Date.now()
+    });
+    statusEl.textContent = '上传成功！已显示在首页。';
+    fileInput.value = '';
+    captionInput.value = '';
+
+    await renderVideos();
+  } catch (err) {
+    console.error(err);
+    statusEl.textContent = '保存失败：' + err.message;
+  }
+});
+
+// 启动：打开数据库并渲染视频
+openDB().then(() => renderVideos()).catch(err => {
+  console.error('数据库打开失败', err);
+  document.getElementById('videoEmpty').textContent = '浏览器不支持本地存储，无法显示视频';
+});
+</script>
+
+</body>
+</html>
