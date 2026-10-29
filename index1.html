@@ -3,24 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>我的网站</title>
+<title>我的视频网站</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, "Microsoft YaHei", sans-serif; background: #f5f6f8; color: #222; }
-  
-  /* 整体布局 */
   .layout { display: flex; min-height: 100vh; }
-  
-  /* 左侧栏 */
   .sidebar { width: 200px; background: #1f2937; padding: 20px 12px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
   .sidebar button { width: 100%; padding: 12px; border: none; border-radius: 8px; background: #374151; color: #fff; font-size: 15px; cursor: pointer; text-align: left; transition: background .2s; }
   .sidebar button:hover { background: #4b5563; }
   .sidebar button.active { background: #2563eb; }
-
-  /* 右侧内容区 */
   .main { flex: 1; padding: 24px; overflow-y: auto; }
-  
-  /* 视频区 */
   .video-area { background: #fff; border-radius: 12px; padding: 20px; min-height: 400px; display: flex; flex-direction: column; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
   .video-area h2 { font-size: 20px; margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
   .video-list { display: flex; flex-wrap: wrap; gap: 20px; flex: 1; align-content: flex-start; }
@@ -28,44 +20,32 @@
   .video-item video { width: 100%; border-radius: 6px; background: #000; aspect-ratio: 16/9; object-fit: cover; }
   .video-item .caption { font-size: 14px; color: #333; margin-top: 8px; word-break: break-all; font-weight: bold; }
   .empty-tip { color: #999; font-size: 16px; padding: 80px 0; text-align: center; flex: 1; display: flex; align-items: center; justify-content: center; }
-
-  /* 分页控制区 */
   .pagination { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; }
   .pagination button { padding: 8px 16px; border: 1px solid #d1d5db; background: #fff; border-radius: 6px; cursor: pointer; }
   .pagination button:disabled { background: #f3f4f6; color: #9ca3af; cursor: not-allowed; }
   .pagination button:not(:disabled):hover { background: #f3f4f6; }
   .pagination span { font-size: 14px; color: #555; }
-
-  /* 通用卡片/表单 */
   .card { background: #fff; border-radius: 12px; padding: 24px; max-width: 540px; box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 20px; }
   .card h2 { font-size: 20px; margin-bottom: 18px; }
   .field { margin-bottom: 16px; }
   .field label { display: block; font-size: 14px; color: #555; margin-bottom: 6px; }
   .field input, .field textarea { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px; font-family: inherit; }
   .field textarea { min-height: 80px; resize: vertical; }
-
-  /* 头像框 */
   .avatar-box { width: 100px; height: 100px; border-radius: 50%; border: 2px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; background: #f9fafb; color: #94a3b8; font-size: 12px; text-align: center; }
   .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
   .avatar-box:hover { border-color: #2563eb; }
-
-  /* 按钮 */
   .btn { padding: 10px 22px; border: none; border-radius: 8px; background: #2563eb; color: #fff; font-size: 15px; cursor: pointer; }
   .btn:hover { background: #1d4ed8; }
   .btn.secondary { background: #e5e7eb; color: #333; }
   .btn.secondary:hover { background: #d1d5db; }
-
-  /* 投稿表单 */
   .file-row { margin-bottom: 14px; }
   .file-row input[type="file"] { font-size: 14px; }
-  
   .hidden { display: none !important; }
 </style>
 </head>
 <body>
 
 <div class="layout">
-  <!-- 左侧按钮栏（6个按钮） -->
   <aside class="sidebar">
     <button data-page="home" class="active">视频主页</button>
     <button data-page="mine">我的</button>
@@ -76,16 +56,12 @@
     <button data-page="todo">待开发</button>
   </aside>
 
-  <!-- 右侧内容区 -->
   <main class="main">
-    <!-- 1. 视频主页 -->
     <section id="page-home">
       <div class="video-area">
         <h2>全部视频</h2>
         <div id="videoList" class="video-list hidden"></div>
         <div id="videoEmpty" class="empty-tip">暂无视频</div>
-        
-        <!-- 翻页按钮区 -->
         <div id="pagination" class="pagination hidden">
           <button id="prevPageBtn">上一页</button>
           <span id="pageInfo">第 1 页 / 共 1 页</span>
@@ -94,15 +70,12 @@
       </div>
     </section>
 
-    <!-- 2. 我的页面 -->
     <section id="page-mine" class="hidden">
       <div class="card">
         <h2>我的资料</h2>
         <div class="field">
           <label>头像</label>
-          <div class="avatar-box" id="avatarBox">
-            <span id="avatarText">点击上传</span>
-          </div>
+          <div class="avatar-box" id="avatarBox"><span id="avatarText">点击上传</span></div>
           <input type="file" id="avatarInput" accept="image/*" class="hidden">
         </div>
         <div class="field">
@@ -120,7 +93,6 @@
         <button class="btn" id="saveProfileBtn">保存资料</button>
       </div>
 
-      <!-- 投稿区域 -->
       <div class="card">
         <h2>投稿视频</h2>
         <div class="file-row">
@@ -132,12 +104,10 @@
           <input type="text" id="videoCaptionInput" placeholder="给视频起个名字" style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:8px;">
         </div>
         <button class="btn" id="uploadVideoBtn">立即投稿并发布</button>
-        <button class="btn secondary" id="cancelSubmitBtn" style="display:none;">取消</button>
         <p id="uploadStatus" style="margin-top:12px;font-size:14px;color:#2563eb;font-weight:bold;"></p>
       </div>
     </section>
 
-    <!-- 3. 待开发页面 -->
     <section id="page-todo" class="hidden">
       <div class="card">
         <h2>功能未开发</h2>
@@ -151,16 +121,23 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* ============================================================
-   ⚠️ 替换下面这两行的内容！！！！！
+   ⚠️ 请替换下面这两行的内容（保留双引号）！！！！！
    ============================================================ */
 const SUPABASE_URL = "https://zafohnnahdswuunhbdxu.supabase.co/rest/v1/";
 const SUPABASE_KEY = "sb_publishable_hnz6Led50sZi-qJYGmGVAA__EsemOtP";
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
+// 安全初始化，即使填错也不影响页面点击
+let supabaseClient = null;
+try {
+  if (window.supabase && SUPABASE_URL.includes('supabase.co')) {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  }
+} catch (e) {
+  console.error("Supabase 初始化失败", e);
+}
 
 /* ============================================================
-   一、页面切换逻辑
+   一、页面切换逻辑（绝对优先执行）
    ============================================================ */
 function showPage(pageId) {
   document.querySelectorAll('main > section').forEach(sec => {
@@ -179,48 +156,58 @@ document.querySelectorAll('.sidebar button').forEach(btn => {
     const page = btn.dataset.page;
     if (page === 'home') {
       showPage('home');
-      renderVideos(); // 切回主页时刷新一下数据
+      fetchVideos(); // 每次回主页刷新数据
+    } else if (page === 'mine') {
+      showPage('mine');
+    } else {
+      showPage('todo');
     }
-    else if (page === 'mine') showPage('mine');
-    else if (page === 'wallet' || page === 'settings' || page === 'todo') showPage('todo');
   });
 });
 
 /* ============================================================
-   二、视频展示与翻页逻辑
+   二、视频展示与翻页
    ============================================================ */
-let allVideos = []; // 存从数据库拿到的所有视频
-let currentPage = 1; // 当前页码
-const itemsPerPage = 4; // 每页显示几个视频
+let allVideos = []; 
+let currentPage = 1; 
+const itemsPerPage = 4; 
 
 async function fetchVideos() {
   const emptyEl = document.getElementById('videoEmpty');
-  emptyEl.textContent = "正在加载...";
+  
+  // 如果数据库连不上，直接提示
+  if (!supabaseClient) {
+    emptyEl.textContent = "数据库连接失败，请检查 URL 和 Key";
+    emptyEl.classList.remove('hidden');
+    return;
+  }
+
+  emptyEl.textContent = "正在加载视频...";
   emptyEl.classList.remove('hidden');
   document.getElementById('videoList').classList.add('hidden');
   document.getElementById('pagination').classList.add('hidden');
 
-  const { data, error } = await supabase
-    .from('videos')
-    .select('*')
-    .order('created_at', { ascending: false }); // 最新的排前面
+  try {
+    const { data, error } = await supabaseClient
+      .from('videos')
+      .select('*')
+      .order('created_at', { ascending: false });
 
-  if (error) {
-    console.error(error);
-    emptyEl.textContent = "加载失败，请检查网络或数据库";
-    return;
+    if (error) throw error;
+
+    allVideos = data || [];
+    currentPage = 1; 
+    renderVideos();
+  } catch (err) {
+    console.error(err);
+    emptyEl.textContent = "加载失败：" + err.message;
   }
-
-  allVideos = data || [];
-  currentPage = 1; // 重置到第一页
-  renderVideos();
 }
 
 function renderVideos() {
   const listEl = document.getElementById('videoList');
   const emptyEl = document.getElementById('videoEmpty');
   const paginationEl = document.getElementById('pagination');
-  
   listEl.innerHTML = '';
 
   if (allVideos.length === 0) {
@@ -231,16 +218,13 @@ function renderVideos() {
     return;
   }
 
-  // 有视频的情况
   emptyEl.classList.add('hidden');
   listEl.classList.remove('hidden');
 
-  // 计算当前页要显示哪几个视频
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const pageVideos = allVideos.slice(startIndex, endIndex);
 
-  // 渲染视频
   pageVideos.forEach(v => {
     const item = document.createElement('div');
     item.className = 'video-item';
@@ -256,7 +240,6 @@ function renderVideos() {
     listEl.appendChild(item);
   });
 
-  // 处理翻页按钮显示
   const totalPages = Math.ceil(allVideos.length / itemsPerPage);
   if (totalPages > 1) {
     paginationEl.classList.remove('hidden');
@@ -264,23 +247,16 @@ function renderVideos() {
     document.getElementById('prevPageBtn').disabled = (currentPage === 1);
     document.getElementById('nextPageBtn').disabled = (currentPage === totalPages);
   } else {
-    paginationEl.classList.add('hidden'); // 只有一页就不显示翻页了
+    paginationEl.classList.add('hidden');
   }
 }
 
-// 翻页按钮点击事件
 document.getElementById('prevPageBtn').addEventListener('click', () => {
-  if (currentPage > 1) {
-    currentPage--;
-    renderVideos();
-  }
+  if (currentPage > 1) { currentPage--; renderVideos(); }
 });
 document.getElementById('nextPageBtn').addEventListener('click', () => {
   const totalPages = Math.ceil(allVideos.length / itemsPerPage);
-  if (currentPage < totalPages) {
-    currentPage++;
-    renderVideos();
-  }
+  if (currentPage < totalPages) { currentPage++; renderVideos(); }
 });
 
 /* ============================================================
@@ -292,51 +268,56 @@ document.getElementById('uploadVideoBtn').addEventListener('click', async () => 
   const statusEl    = document.getElementById('uploadStatus');
   const file = fileInput.files[0];
 
+  if (!supabaseClient) {
+    statusEl.textContent = '上传失败：Supabase 未连接';
+    statusEl.style.color = 'red';
+    return;
+  }
+
   if (!file) {
     alert('请先选择一个视频文件');
     return;
   }
 
-  statusEl.textContent = '正在上传，请稍候（视频越大时间越长）...';
+  statusEl.style.color = '#2563eb';
+  statusEl.textContent = '正在上传，请稍候...';
 
   try {
-    // 1. 生成唯一文件名
     const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_]/g, '')}`;
     
-    // 2. 上传到 Supabase 存储桶
-    const { data: uploadData, error: uploadError } = await supabase.storage.from('videos').upload(fileName, file);
+    // 1. 上传文件到存储桶
+    const { data: uploadData, error: uploadError } = await supabaseClient.storage.from('videos').upload(fileName, file);
     if (uploadError) throw uploadError;
     
-    // 3. 获取公开链接
-    const { data: urlData } = supabase.storage.from('videos').getPublicUrl(fileName);
+    // 2. 获取链接
+    const { data: urlData } = supabaseClient.storage.from('videos').getPublicUrl(fileName);
     const publicUrl = urlData.publicUrl;
     
     statusEl.textContent = '视频上传成功，正在保存记录...';
     
-    // 4. 写入数据库
-    const { error: dbError } = await supabase.from('videos').insert([{ caption: captionInput.value.trim(), video_url: publicUrl }]);
+    // 3. 写入数据库表
+    const { error: dbError } = await supabaseClient.from('videos').insert([{ caption: captionInput.value.trim(), video_url: publicUrl }]);
     if (dbError) throw dbError;
 
     statusEl.textContent = '发布成功！已跳转到主页。';
     fileInput.value = '';
     captionInput.value = '';
     
-    // 5. 刷新主页并跳转
+    // 4. 刷新并跳转
     await fetchVideos();
     showPage('home');
     
-    // 稍后清空提示
     setTimeout(() => { statusEl.textContent = ''; }, 3000);
 
   } catch (err) {
     console.error(err);
-    statusEl.textContent = '上传失败：' + err.message;
     statusEl.style.color = 'red';
+    statusEl.textContent = '上传失败：' + err.message;
   }
 });
 
 /* ============================================================
-   四、本地资料保存 (头像、名字等)
+   四、本地资料保存
    ============================================================ */
 const avatarBox   = document.getElementById('avatarBox');
 const avatarInput = document.getElementById('avatarInput');
@@ -350,7 +331,6 @@ avatarInput.addEventListener('change', () => {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
-    // 压缩图片防止本地存储溢出
     const img = new Image();
     img.onload = () => {
       const canvas = document.createElement('canvas');
@@ -376,7 +356,7 @@ document.getElementById('saveProfileBtn').addEventListener('click', () => {
   profile.age  = ageInput.value.trim();
   profile.note = noteInput.value.trim();
   localStorage.setItem('profile', JSON.stringify(profile));
-  alert('资料已保存到本地浏览器');
+  alert('资料已保存到本地');
 });
 
 function loadProfile() {
@@ -387,13 +367,9 @@ function loadProfile() {
   if (data.note) noteInput.value = data.note;
 }
 
-/* ============================================================
-   启动
-   ============================================================ */
+/* 启动 */
 loadProfile();
 fetchVideos();
 </script>
 </body>
-</html>
-```
-  
+</html> 
